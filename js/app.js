@@ -1,19 +1,22 @@
-// Variables globales
+// VARIABLES GLOBALES
 const carrito = document.getElementById('carrito');
 const cursos = document.getElementById('lista-cursos');
 const listaCarrito = document.querySelector('#lista-carrito tbody')
 
-// EventListeners
+// EVENTLISTENERS
 cargarEventListeners();
 
 function cargarEventListeners() {
     //Click agregar carrito
     cursos.addEventListener('click', comprarCurso);
 
+    //Cuando se elimina un curso del carrito
+    listaCarrito.addEventListener('click', quitarCurso);
+
 }
 
 
-// Funciones
+// FUNCIONES
 
 // Añadr curso al carrito
 function comprarCurso(e) {
@@ -47,4 +50,12 @@ function insertarEnCarrito(infoCurso) {
         <td><a href="#" class="borrar-curso" data-id="${infoCurso.id}">X</a></td>
         `
     listaCarrito.appendChild(row);
+}
+
+// Quita un curso del carrito
+function quitarCurso(e) {
+    e.preventDefault();
+    if(e.target.classList.contains('borrar-curso')) {
+        e.target.parentElement.parentElement.remove();
+    }
 }
