@@ -32,6 +32,7 @@ function comprarCurso(e) {
         const curso = e.target.parentElement.parentElement;
         const infoCurso = leerInfoCurso(curso);
         insertarEnCarrito(infoCurso);
+        guardarCursoLS(infoCurso);
     } else {console.log('no')};
 }
 
@@ -56,14 +57,19 @@ function insertarEnCarrito(infoCurso) {
         <td><a href="#" class="borrar-curso" data-id="${infoCurso.id}">X</a></td>
         `
     listaCarrito.appendChild(row);
-    guardarCursoLS(infoCurso);
 }
 
 // Quita un curso del carrito
 function quitarCurso(e) {
     e.preventDefault();
     if(e.target.classList.contains('borrar-curso')) {
-        e.target.parentElement.parentElement.remove();
+        let curso = e.target.parentElement.parentElement;
+        console.log(curso);
+        let infoCurso = leerInfoCurso(curso);
+        console.log(infoCurso);
+
+        curso.remove();
+        console.log(infoCurso.id);
     }
 }
 
@@ -94,7 +100,7 @@ function guardarCursoLS(infoCurso) {
 
 // Devuelve arreglo con infoCursos del Local storage
 function obtenerCursosLS() {
-    if(localStorage.getItem('cursos') ===null) {
+    if(localStorage.getItem('cursos') === null) {
         cursosLS = [];
     } else {
         cursosLS =JSON.parse(localStorage.getItem('cursos'));
@@ -110,4 +116,8 @@ function cargarCarritoLS() {
         
         insertarEnCarrito(curso);
     });
+}
+
+function borrarCursoLS(infoCurso) {
+
 }
