@@ -19,7 +19,7 @@ function cargarEventListeners() {
 
     //Cargar DOM con datos del LS
     document.addEventListener('DOMContentLoaded', cargarCarritoLS)
-}
+};
 
 
 // FUNCIONES
@@ -30,14 +30,14 @@ function comprarCurso(e) {
     // Delegation:
     if(e.target.classList.contains('agregar-carrito')) {
         const curso = e.target.parentElement.parentElement;
-        const infoCurso = leerInfoCurso(curso);
+        const infoCurso = leerInfoCursoCard(curso);
         insertarEnCarrito(infoCurso);
         guardarCursoLS(infoCurso);
-    } else {console.log('no')};
-}
+    };
+};
 
 // Lee los datos de la info card de curso
-function leerInfoCurso(curso) {
+function leerInfoCursoCard(curso) {
     const infoCurso = {
         imagenSrc: curso.querySelector('img').src,
         titulo: curso.querySelector('h4').textContent,
@@ -45,7 +45,7 @@ function leerInfoCurso(curso) {
         id: curso.querySelector('a').getAttribute('data-id')
     };
     return infoCurso;
-}
+};
 
 // Agrega al carrito el curso segun info del parámetro
 function insertarEnCarrito(infoCurso) {
@@ -57,21 +57,19 @@ function insertarEnCarrito(infoCurso) {
         <td><a href="#" class="borrar-curso" data-id="${infoCurso.id}">X</a></td>
         `
     listaCarrito.appendChild(row);
-}
+};
 
 // Quita un curso del carrito
 function quitarCurso(e) {
     e.preventDefault();
     if(e.target.classList.contains('borrar-curso')) {
         let curso = e.target.parentElement.parentElement;
-        console.log(curso);
-        let infoCurso = leerInfoCurso(curso);
-        console.log(infoCurso);
+        let idCurso = leerIdCursoCarrito(curso);
+        borrarCursoLS(idCurso);
 
         curso.remove();
-        console.log(infoCurso.id);
-    }
-}
+    };
+};
 
 //Limpia el listado de carritos
 function vaciarCarrito(e) {
@@ -82,10 +80,12 @@ function vaciarCarrito(e) {
     //Forma rapida y recomendada
     while(listaCarrito.firstChild) {
         listaCarrito.removeChild(listaCarrito.firstChild);
-    }
+    };
+    //Vaciar local Storage
+    localStorage.setItem('cursos', '[]');
 
     return false; //Para que no se cierre el carrito cuando limpias
-}
+};
 
 //Almacena curso en el carrito en LS
 function guardarCursoLS(infoCurso) {
@@ -96,7 +96,7 @@ function guardarCursoLS(infoCurso) {
     cursosLS.push(infoCurso);
 
     localStorage.setItem('cursos', JSON.stringify(cursosLS))
-}
+};
 
 // Devuelve arreglo con infoCursos del Local storage
 function obtenerCursosLS() {
@@ -107,7 +107,7 @@ function obtenerCursosLS() {
     };
 
     return cursosLS;
-}
+};
 
 function cargarCarritoLS() {
     let cursosLS = obtenerCursosLS();
@@ -116,8 +116,18 @@ function cargarCarritoLS() {
         
         insertarEnCarrito(curso);
     });
-}
+};
 
-function borrarCursoLS(infoCurso) {
+function borrarCursoLS(idCurso) {
+    let cursosLS = obtenerCursosLS();
+    cursosLS.forEach(function(curso, index) {
+        if(idCurso === curso.id) {
+            cursosLS.splice(index, 1);
+        };
+    });
+    localStorage.setItem('cursos', JSON.stringify(cursosLS));
+};
 
-}
+function leerIdCursoCarrito(curso) {
+    return curso.querySelector('a').getAttribute('data-id')
+};
